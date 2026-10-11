@@ -100,8 +100,8 @@ const seedAdminUser = async () => {
   try {
     const adminExists = await User.findOne({ role: 'admin' });
     if (!adminExists) {
-      const adminEmail = process.env.ADMIN_EMAIL || 'admin@magranchal.com';
-      const adminPassword = process.env.ADMIN_PASSWORD || 'admin123456';
+      const adminEmail = process.env.ADMIN_EMAIL || 'magranchalkhojkabar.com';
+      const adminPassword = process.env.ADMIN_PASSWORD || 'magranchal';
       const adminName = process.env.ADMIN_NAME || 'Admin Magranchal';
 
       const salt = await bcrypt.genSalt(10);
