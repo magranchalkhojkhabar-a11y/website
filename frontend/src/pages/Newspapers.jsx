@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../lib/api';
 import { Newspaper, Download, Eye, Calendar, FileText, X, Clock, ShieldCheck, Sparkles } from 'lucide-react';
 
 const Newspapers = () => {
@@ -10,7 +10,7 @@ const Newspapers = () => {
   const fetchNewspapers = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('/api/newspapers');
+      const res = await api.get('/api/newspapers');
       setNewspapers(res.data.newspapers || []);
     } catch (error) {
       console.error('Error fetching newspapers:', error);
@@ -25,7 +25,7 @@ const Newspapers = () => {
 
   const handleDownload = async (paper) => {
     try {
-      await axios.post(`/api/newspapers/${paper._id}/download`);
+      await api.post(`/api/newspapers/${paper._id}/download`);
       window.open(paper.pdfUrl, '_blank');
     } catch (error) {
       window.open(paper.pdfUrl, '_blank');

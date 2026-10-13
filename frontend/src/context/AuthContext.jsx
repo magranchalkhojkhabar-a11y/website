@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../lib/api';
 
 export const AuthContext = createContext();
 
@@ -8,18 +8,11 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('magranchal_token') || '');
   const [loading, setLoading] = useState(true);
 
-  // Set default axios header
-  if (token) {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-  } else {
-    delete axios.defaults.headers.common['Authorization'];
-  }
-
   useEffect(() => {
     const fetchUser = async () => {
       if (token) {
         try {
-          const res = await axios.get('/api/auth/me');
+          const res = await api.get('/api/auth/me');
           setUser(res.data);
         } catch (error) {
           console.error('Failed to fetch user profile:', error);
@@ -33,7 +26,7 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   const login = async (email, password) => {
-    const res = await axios.post('/api/auth/login', { email, password });
+    const res = await api.post('/api/auth/login', { email, password });
     const { token: userToken, ...userData } = res.data;
 
     localStorage.setItem('magranchal_token', userToken);
@@ -43,7 +36,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (name, email, password) => {
-    const res = await axios.post('/api/auth/register', { name, email, password });
+    const res = await api.post('/api/auth/register', { name, email, password });
     const { token: userToken, ...userData } = res.data;
 
     localStorage.setItem('magranchal_token', userToken);
@@ -53,7 +46,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const googleLogin = async (googlePayload) => {
-    const res = await axios.post('/api/auth/google', googlePayload);
+    const res = await api.post('/api/auth/google', googlePayload);
     const { token: userToken, ...userData } = res.data;
 
     localStorage.setItem('magranchal_token', userToken);
@@ -66,7 +59,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('magranchal_token');
     setToken('');
     setUser(null);
-    delete axios.defaults.headers.common['Authorization'];
   };
 
   return (

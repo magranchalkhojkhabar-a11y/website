@@ -34,7 +34,7 @@ const Login = () => {
 
   const fillDemoAdmin = () => {
     setEmail('admin@magranchal.com');
-    setPassword('admin123456');
+    setPassword('');
   };
 
   return (

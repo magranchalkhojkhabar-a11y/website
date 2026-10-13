@@ -8,9 +8,16 @@
   }
   
   body {
-    background-color: #f8f9fa;
+    min-width: 320px;
+    background-color: #f5f4ef;
+    background-image: radial-gradient(circle at top right, rgba(250, 204, 21, 0.12), transparent 26rem);
     color: #121212;
     overflow-x: hidden;
+  }
+
+  :focus-visible {
+    outline: 3px solid #facc15;
+    outline-offset: 3px;
   }
 }
 
@@ -27,6 +34,15 @@
 
 .animate-marquee:hover {
   animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Red, Yellow & Black Theme Custom Utility Classes */

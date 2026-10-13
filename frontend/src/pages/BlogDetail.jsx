@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../lib/api';
 import {
   Calendar,
   Eye,
@@ -27,7 +27,7 @@ const BlogDetail = () => {
     const fetchBlog = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`/api/blogs/${identifier}`);
+        const res = await api.get(`/api/blogs/${identifier}`);
         setBlog(res.data);
       } catch (err) {
         setError(err.response?.data?.message || 'ब्लॉग लोड करने में असमर्थ');

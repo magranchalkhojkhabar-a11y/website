@@ -43,7 +43,4 @@ const newspaperSchema = new mongoose.Schema(
   }
 );
 
-// Explicit TTL index definition
-newspaperSchema.index({ createdAt: 1 }, { expireAfterSeconds: 2592000 });
-
 module.exports = mongoose.model('Newspaper', newspaperSchema);

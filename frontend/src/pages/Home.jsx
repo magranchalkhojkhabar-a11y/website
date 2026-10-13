@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../lib/api';
 import {
   Newspaper,
   Download,
@@ -32,8 +32,8 @@ const Home = () => {
     const fetchData = async () => {
       try {
         const [blogsRes, newspaperRes] = await Promise.all([
-          axios.get('/api/blogs?limit=12'),
-          axios.get('/api/newspapers/latest').catch(() => ({ data: null }))
+          api.get('/api/blogs?limit=12'),
+          api.get('/api/newspapers/latest').catch(() => ({ data: null }))
         ]);
 
         setBlogs(blogsRes.data.blogs || []);
@@ -51,7 +51,7 @@ const Home = () => {
   const handleDownload = async (e, paper) => {
     e.preventDefault();
     try {
-      await axios.post(`/api/newspapers/${paper._id}/download`);
+      await api.post(`/api/newspapers/${paper._id}/download`);
       window.open(paper.pdfUrl, '_blank');
     } catch (err) {
       window.open(paper.pdfUrl, '_blank');

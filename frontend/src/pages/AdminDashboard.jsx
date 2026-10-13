@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../lib/api';
 import { AuthContext } from '../context/AuthContext';
 import {
   ShieldAlert,
@@ -56,8 +56,8 @@ const AdminDashboard = () => {
     setLoading(true);
     try {
       const [blogsRes, papersRes] = await Promise.all([
-        axios.get('/api/blogs?limit=50'),
-        axios.get('/api/newspapers?limit=50')
+        api.get('/api/blogs?limit=50'),
+        api.get('/api/newspapers?limit=50')
       ]);
       setBlogs(blogsRes.data.blogs || []);
       setNewspapers(papersRes.data.newspapers || []);
@@ -93,12 +93,12 @@ const AdminDashboard = () => {
     try {
       setLoading(true);
       if (editingBlogId) {
-        await axios.put(`/api/blogs/${editingBlogId}`, formData, {
+        await api.put(`/api/blogs/${editingBlogId}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
         showNotification('success', 'ब्लॉग सफलतापूर्वक अपडेट किया गया!');
       } else {
-        await axios.post('/api/blogs', formData, {
+        await api.post('/api/blogs', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
         showNotification('success', 'नया ब्लॉग सफलतापूर्वक प्रकाशित किया गया!');
@@ -129,7 +129,7 @@ const AdminDashboard = () => {
   const handleDeleteBlog = async (id) => {
     if (!window.confirm('क्या आप निश्चित रूप से इस ब्लॉग को हटाना चाहते हैं?')) return;
     try {
-      await axios.delete(`/api/blogs/${id}`);
+      await api.delete(`/api/blogs/${id}`);
       showNotification('success', 'ब्लॉग सफलतापूर्वक हटा दिया गया।');
       fetchData();
     } catch (err) {
@@ -157,7 +157,7 @@ const AdminDashboard = () => {
 
     try {
       setLoading(true);
-      await axios.post('/api/newspapers', formData, {
+      await api.post('/api/newspapers', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       showNotification('success', 'नया ई-पेपर (PDF) सफलतापूर्वक अपलोड किया गया!');
@@ -177,7 +177,7 @@ const AdminDashboard = () => {
   const handleDeletePaper = async (id) => {
     if (!window.confirm('क्या आप निश्चित रूप से इस ई-पेपर PDF को हटाना चाहते हैं?')) return;
     try {
-      await axios.delete(`/api/newspapers/${id}`);
+      await api.delete(`/api/newspapers/${id}`);
       showNotification('success', 'ई-पेपर सफलतापूर्वक हटा दिया गया।');
       fetchData();
     } catch (err) {

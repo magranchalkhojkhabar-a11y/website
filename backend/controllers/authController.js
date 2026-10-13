@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 // Generate JWT Token
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET || 'magranchal_secret_key_2026_super_secure', {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: '30d'
   });
 };
@@ -14,7 +14,7 @@ const generateToken = (id) => {
 // @access  Public
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'Please provide all required fields' });
@@ -28,14 +28,11 @@ const registerUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Only allow setting 'admin' role if explicitly requested or seeding
-    const userRole = role === 'admin' ? 'admin' : 'user';
-
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
-      role: userRole
+      role: 'user'
     });
 
     res.status(201).json({
@@ -100,9 +97,11 @@ const seedAdminUser = async () => {
   try {
     const adminExists = await User.findOne({ role: 'admin' });
     if (!adminExists) {
-      const adminEmail = process.env.ADMIN_EMAIL || 'magranchalkhojkabar.com';
-      const adminPassword = process.env.ADMIN_PASSWORD || 'magranchal';
-      const adminName = process.env.ADMIN_NAME || 'Admin Magranchal';
+      const { ADMIN_EMAIL: adminEmail, ADMIN_PASSWORD: adminPassword, ADMIN_NAME: adminName } = process.env;
+      if (!adminEmail || !adminPassword || !adminName) {
+        console.warn('[Seed Admin] Skipped: ADMIN_NAME, ADMIN_EMAIL, and ADMIN_PASSWORD are required.');
+        return;
+      }
 
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(adminPassword, salt);

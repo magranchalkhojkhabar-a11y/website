@@ -49,7 +49,4 @@ const blogSchema = new mongoose.Schema(
   }
 );
 
-// Explicit TTL index definition
-blogSchema.index({ createdAt: 1 }, { expireAfterSeconds: 2592000 });
-
 module.exports = mongoose.model('Blog', blogSchema);

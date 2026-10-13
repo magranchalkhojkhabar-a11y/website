@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../lib/api';
 import { Search, Calendar, Eye, ArrowRight, Filter, BookOpen, Sparkles, ChevronRight } from 'lucide-react';
 
 const categories = ['All', 'Local News', 'Politics', 'Sports', 'Business', 'Opinion'];
@@ -30,7 +30,7 @@ const Blogs = () => {
   const fetchBlogs = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('/api/blogs', {
+      const res = await api.get('/api/blogs', {
         params: {
           search,
           category: selectedCategory,

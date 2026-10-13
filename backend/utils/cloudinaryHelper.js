@@ -1,15 +1,19 @@
 const cloudinary = require('../config/cloudinary');
 const fs = require('fs');
 const path = require('path');
+const { hasCloudinaryCredentials } = require('../config/env');
 
 const uploadToCloudinary = (fileBuffer, options = {}) => {
   return new Promise((resolve, reject) => {
     // Check if Cloudinary is configured
-    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
-    const isConfigured = cloudName && cloudName !== 'your_cloudinary_cloud_name';
+    const isConfigured = hasCloudinaryCredentials();
 
     if (!isConfigured) {
-      // Local file fallback
+      if (process.env.ALLOW_LOCAL_UPLOADS !== 'true') {
+        return reject(new Error('Cloudinary is not configured. Configure Cloudinary before deploying uploads.'));
+      }
+
+      // Local-only fallback; Vercel's filesystem is not persistent.
       try {
         const uploadsFolder = path.join(__dirname, '../uploads');
         if (!fs.existsSync(uploadsFolder)) {
@@ -53,8 +57,7 @@ const uploadToCloudinary = (fileBuffer, options = {}) => {
 
 const deleteFromCloudinary = async (publicId, resourceType = 'image') => {
   try {
-    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
-    if (cloudName && cloudName !== 'your_cloudinary_cloud_name' && publicId) {
+    if (hasCloudinaryCredentials() && publicId) {
       await cloudinary.uploader.destroy(publicId, { resource_type: resourceType });
     }
   } catch (error) {
